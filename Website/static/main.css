@@ -520,3 +520,16 @@ img{
     left: 0;
     z-index: 5;
 }
+
+.rooms-button {
+    line-height: 10px;
+    color: #fff;
+    padding: 12px 30px;
+    text-decoration:none;
+    font-size:20px;
+    font-weight:bold;
+    text-transform: uppercase;
+    flex: 1;
+    background-color: transparent;
+    border-color: transparent;
+}
