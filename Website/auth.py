@@ -1,4 +1,4 @@
-from flask import Blueprint 
+from flask import Blueprint , render_template
 
 ##### Similar to views file but this for the authentication (login page...)
 
@@ -6,14 +6,17 @@ auth = Blueprint('auth',__name__) ## attention to naming is unimportant, just by
 
 #### Making routes for each login, logout , and signup and assigning dummy HTML headers for now* (20.11.2022 , 12:30 am) ~ Saad
 
-@auth.route('/login')
-def login():
-    return "<h1>login<h1>"
 
-@auth.route('/logout')
+
+
+@auth.route('/login', methods= ['GET', 'POST']) ## GET and POST are flask HTTP methods, where GET is used to retrieve information
+def login():                                    ## from a web server, and POST is used to send information
+    return render_template("login.html") ## referencing to the login page template 
+
+@auth.route('/logout',  methods= ['GET', 'POST'])
 def logout():
     return "<h1> Logout<h1>"
 
-@auth.route('/signup')
+@auth.route('/signup', methods= ['GET', 'POST'])
 def sign_up():
-    return "<h1>Sign Up<h1>"
+    return render_template("signUp.html")

@@ -7,7 +7,7 @@ from flask import Blueprint , render_template
 
 views = Blueprint('views',__name__) ## attention to naming is unimportant, just by convention/ease ~ Saad
 
-@views.route('/')
+@views.route('/', methods=['GET', 'POST']) ## GET and POST are Flask 
 
 def home():
-    return render_template('Hotel_Res.html')
+    return render_template("index.html")
