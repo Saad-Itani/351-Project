@@ -29,6 +29,35 @@
                 
                 
             </div>
+            <!--search bar for booking rooms-->
+            <div class = "book">
+                <form class = "book-form">
+                    <div class = "form-item">
+                        <label for = "checkin-date">Check In Date: </label>
+                        <input type = "date" id = "chekin-date">
+                    </div>
+                    <div class = "form-item">
+                        <label for = "checkout-date">Check Out Date: </label>
+                        <input type = "date" id = "chekout-date">
+                    </div>
+                    <div class = "form-item">
+                        <label for = "adult">Single or Double </label>
+                        <select id="adult">
+                            <option value="country">Select Room Type</option>
+                            <option value="country">Single</option>
+                            <option value="country">Double</option>
+
+                        </select>
+                    </div>
+                    <div class = "form-item">
+                        <label for = "rooms">Rooms: </label>
+                        <input type = "number" min = "1" value = "1" id = "rooms">
+                    </div>
+                    <div class = "form-item">
+                        <input type = "submit" class = "btn" value = "Book Now">
+                    </div>
+                </form>
+            </div>
 
         </header>
         <!-- end of header -->
