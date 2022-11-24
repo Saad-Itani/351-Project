@@ -35,12 +35,14 @@ def login():                                    ## from a web server, and POST i
     if request.method == 'POST' and 'Email_address' in request.form and 'password' in request.form:
         Email_address =  request.form['Email_address']
         password = request.form['password']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) 
-        cursor.execute('SELECT * FROM users WHERE Email_address = % s AND  password = %s ', (Email_address,password))
-        account = cursor.fetchone()
-        if account:
-            return render_template("index.html", account = account)
-
+        with app.app_context():
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) 
+            cursor.execute('SELECT * FROM users WHERE Email_address = % s AND  password = %s ', (Email_address,password))
+            account = cursor.fetchcone()
+            if account:
+                return "Success"
+            else:
+                flash("User not found", category = 'error')
 
     """
     if request.method='POST' #this means the submit button was hit from the form, and now we have the form data which needs to be stored onto the database -leen

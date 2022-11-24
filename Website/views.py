@@ -10,3 +10,7 @@ views = Blueprint('views',__name__) ## attention to naming is unimportant, just 
 
 def home():
     return render_template("index.html")
+
+@views.route('/rooms',methods=['GET','POST'])
+def rooms():
+    return render_template("rooms.html")
