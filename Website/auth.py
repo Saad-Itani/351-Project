@@ -51,7 +51,14 @@ def login():
                         msg = 'Incorrect username / password !'
     return render_template('login.html', msg = msg)
     
-
+    @app.route('/')
+    def Home():
+        cur= mysql.connection.cursor()
+        cur.execute("SELECT * FROM users")
+        fetchdata = cur.fetchall()
+        cur.close()
+        
+        return render_template('home.html',data=fetchdata)
     """
     if request.method='POST' #this means the submit button was hit from the form, and now we have the form data which needs to be stored onto the database -leen
     #fetch form data
