@@ -145,6 +145,11 @@ def reset_password():
         else:
             print("test4")
             id = randint(10000000,99999999) ## 9 digit id 
+            """userDetails= request.form
+               First_Name= userDetails['First_Name'] #stores name
+               Last_Name=userDetails['Last_Name']
+               id= userDetails['ID']
+                """
             cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
             mysql.connection.commit()
             msg = 'You have successfully changed the password !'
