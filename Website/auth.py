@@ -2,6 +2,8 @@ from flask import Flask, Blueprint , render_template, render_template, request, 
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
+from random import randint
+
 ##### Similar to views file but this for the authentication (login page...)
 
 
@@ -77,5 +79,36 @@ def logout():
 
 @auth.route('/signup', methods= ['GET', 'POST'])
 def sign_up():
-    return render_template("signUp.html")
-
+    print("test")
+    msg = " "
+    if request.method == 'POST' :
+       print("POST") 
+       if 'First_Name' in  request.form and 'Last_Name' in request.form and 'Email_address' in request.form and 'password' in request.form:
+        print("hi") 
+        First_Name = request.form["First_Name"]
+        Last_Name = request.form["Last_Name"]
+        Email = request.form["Email_address"]
+        password = request.form["password"] 
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        print("test0")
+        cursor.execute('SELECT * FROM users WHERE Email_address = % s', (Email ))
+        print("query success")
+        account = cursor.fetchone()
+        if account:
+            print("test1")
+            msg = 'Account already exists !'
+            Flask.flash("Account already exists")
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', Email):
+            print("test2")
+            msg = 'Invalid email address !'
+        elif not Email or not password or not First_Name or not Last_Name:
+            print("test3")
+            msg = 'Please fill out the form !'
+        else:
+            print("test4")
+            id = randint(10000000,99999999) ## 9 digit id 
+            cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
+            mysql.connection.commit()
+            msg = 'You have successfully registered !'
+            return render_template("login.html",msg = msg)
+    return render_template('signUp.html', msg = msg)
