@@ -119,3 +119,34 @@ def sign_up():
             msg = 'You have successfully registered !'
             return render_template("login.html",msg = msg)
     return render_template('signUp.html', msg = msg)
+
+
+@auth.route('/resetpassword', methods= ['GET', 'POST'])
+def reset_password():
+    print("test")
+    msg = " "
+    if request.method == 'POST' :
+       print("POST") 
+       if 'Email_address' in request.form and 'password' in request.form:
+        print("hi") 
+        Email = request.form["Email_address"]
+        password = request.form["password"] 
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        print("test0")
+        cursor.execute('SELECT * FROM users WHERE Email_address = % s', (Email ))
+        print("query success")
+        account = cursor.fetchone()
+        if not re.match(r'[^@]+@[^@]+\.[^@]+', Email):
+            print("test2")
+            msg = 'Invalid email address !'
+        elif not Email or not password:
+            print("test3")
+            msg = 'Please fill out the form !'
+        else:
+            print("test4")
+            id = randint(10000000,99999999) ## 9 digit id 
+            cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
+            mysql.connection.commit()
+            msg = 'You have successfully changed the password !'
+            return render_template("login.html",msg = msg)
+    return render_template('resetPassword.html', msg = msg)
