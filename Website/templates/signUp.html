@@ -23,30 +23,35 @@
          <div class="text">
             Sign Up Form
          </div>
-         <form action="#" align="center">
+         <form action="{{url_for('auth.sign_up')}}" method = "post" align="center">
             <!--first name-->
             <div class="field">
-               <input type="text" required>
+               <input type="text" id = "First_Name" name = "First_Name" required>
                <span class="fas fa-user"></span>
                <label>First Name</label>
             </div>
             <!--last name-->
             <div class="field">
-               <input type="text" required>
+               <input type="text" id = "Last_Name" name="Last_Name" required>
                <span class="fas fa-user"></span>
                <label>Last Name</label>
             </div>
             <div class="field">
-               <input type="text" name = Email_address id = Email_address  required>
+               <input type="text" name = "Email_address" id = "Email_address"  required>
                <span class="fas fa-user"></span>
                <label>Email or Phone</label>
             </div>
             <div class="field">
-               <input type="password"  name = password id = password required>
+               <input type="password"  name = "password" id = "password" required>
                <span class="fas fa-lock"></span>
                <label>Password</label>
             </div>
-            <button onclick="window.location.href='index.html'"> Sign Up </button>
+            <button type="submit" class = "btn" > Sign Up </button>
+            <body>
+               {% for mesg in get_flashed_messages() %}
+               <h1>{{ mesg }}</h1>
+               {% endfor %}
+            </body>
             <div class="sign-up">
                <a href="login.html">Back To Login</a>
             </div>
