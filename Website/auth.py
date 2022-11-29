@@ -131,14 +131,14 @@ def reset_password():
             msg = 'You have successfully changed your password !'
             return render_template("login.html",msg = msg)
     return render_template('resetPassword.html', msg = msg)
-"""
+
 @app.route('/pythonlogin/profile')
 def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
         # We need all the account info for the user so we can display it on the profile page
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
+        cursor.execute('SELECT * FROM accounts WHERE Email_address = %s', (session['Email'],))
         account = cursor.fetchone()
         # Show the profile page with account info
         return render_template('profile.html', account=account)
