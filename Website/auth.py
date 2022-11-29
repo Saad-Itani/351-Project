@@ -110,35 +110,37 @@ def sign_up():
 
 @auth.route('/resetpassword', methods= ['GET', 'POST'])
 def reset_password():
-    print("test")
     msg = " "
     if request.method == 'POST' :
-       print("POST") 
-       if 'Email_address' in request.form and 'password' in request.form:
-        print("hi") 
+       if  'Email_address' in request.form and 'password' in request.form:
         Email = request.form["Email_address"]
         password = request.form["password"] 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        print("test0")
-        cursor.execute('SELECT * FROM users WHERE Email_address = % s', (Email ))
-        print("query success")
+        cursor.execute('SELECT * FROM users WHERE Email_address = % s', [Email])
         account = cursor.fetchone()
-        if not re.match(r'[^@]+@[^@]+\.[^@]+', Email):
+       if not re.match(r'[^@]+@[^@]+\.[^@]+', Email):
             print("test2")
             msg = 'Invalid email address !'
-        elif not Email or not password:
+         elif not Email or not password:
             print("test3")
             msg = 'Please fill out the form !'
         else:
-            print("test4")
             id = randint(10000000,99999999) ## 9 digit id 
-            """userDetails= request.form
-               First_Name= userDetails['First_Name'] #stores name
-               Last_Name=userDetails['Last_Name']
-               id= userDetails['ID']
-                """
             cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
             mysql.connection.commit()
-            msg = 'You have successfully changed the password !'
+            msg = 'You have successfully changed your password !'
             return render_template("login.html",msg = msg)
     return render_template('resetPassword.html', msg = msg)
+"""
+@app.route('/pythonlogin/profile')
+def profile():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # We need all the account info for the user so we can display it on the profile page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
+        account = cursor.fetchone()
+        # Show the profile page with account info
+        return render_template('profile.html', account=account)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
