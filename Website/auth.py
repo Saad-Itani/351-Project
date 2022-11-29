@@ -61,20 +61,6 @@ def login():
         cur.close()
         
         return render_template('home.html',data=fetchdata)
-    """
-    if request.method='POST' #this means the submit button was hit from the form, and now we have the form data which needs to be stored onto the database -leen
-    #fetch form data
-    userDetails= request.form
-    First_Name= userDetails['First_Name'] #stores name
-    Last_Name=userDetails['Last_Name']
-    ID= userDetails['ID']
-    Password=userDetails['Password']
-    Dob =userDetails['Dob']
-    Balance =userDetails['name']
-    Email_address=userDetails['Email_address'] #stores email , we need to store these values in the database to be able to use them - leen
-    cursor = mysql.connection.cursor()
-    cur.execute("INSERT INTO users(ID,First_Name,Last_Name,Password,Dob,Balance) VALUES ()")
-    """
     return render_template("login.html") ## referencing to the login page template 
 
 @auth.route('/logout',  methods= ['GET', 'POST'])
@@ -110,6 +96,22 @@ def sign_up():
 
 @auth.route('/resetpassword', methods= ['GET', 'POST'])
 def reset_password():
+    msg = ''  
+    editUserEmail = request.args.get('Email_address')
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE Email_address = % s', (editUserId, ))
+        editUser = cursor.fetchone()
+        if request.method == 'POST' and 'Password' in request.form and 'Email_address' in request.form:
+            Password = request.form['Password']   
+         cursor.execute('UPDATE user SET    Password =% s , WHERE Email_address =% s', ( Password, (Email_address, ), ))
+                mysql.connection.commit()
+                msg = 'Password successfully changed !'
+                return redirect(url_for('users'))
+        elif request.method == 'POST':
+            msg = 'Please enter the new password !'        
+        return render_template("resetPassword.html", msg = msg, editUser = editUser)
+    return redirect(url_for('login'))
+    """
     msg = " "
     if request.method == 'POST' :
        if  'Email_address' in request.form and 'password' in request.form:
@@ -119,10 +121,8 @@ def reset_password():
         cursor.execute('SELECT * FROM users WHERE Email_address = % s', [Email])
         account = cursor.fetchone()
        if not re.match(r'[^@]+@[^@]+\.[^@]+', Email):
-            print("test2")
             msg = 'Invalid email address !'
          elif not Email or not password:
-            print("test3")
             msg = 'Please fill out the form !'
         else:
             id = randint(10000000,99999999) ## 9 digit id 
@@ -131,6 +131,7 @@ def reset_password():
             msg = 'You have successfully changed your password !'
             return render_template("login.html",msg = msg)
     return render_template('resetPassword.html', msg = msg)
+    """
 
 @app.route('/pythonlogin/profile')
 def profile():
@@ -138,9 +139,61 @@ def profile():
     if 'loggedin' in session:
         # We need all the account info for the user so we can display it on the profile page
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE Email_address = %s', (session['Email'],))
+        cursor.execute('SELECT * FROM accounts WHERE Email_address = %s', [Email])
         account = cursor.fetchone()
         # Show the profile page with account info
         return render_template('profile.html', account=account)
     # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+@app.route("/password_change", methods =['GET', 'POST'])
+def password_change():
+    mesage = ''
+    if 'loggedin' in session:
+        changePassUserId = request.args.get('ID')        
+        if request.method == 'POST' and 'password' in request.form and 'confirm_pass' in request.form and 'ID' in request.form  :
+            password = request.form['password']   
+            confirm_pass = request.form['confirm_pass'] 
+            userId = request.form['ID']
+            if not password or not confirm_pass:
+                message = 'Please fill out the form !'
+            elif password != confirm_pass:
+                mesage = 'Confirm password is not equal!'
+            else:
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('UPDATE user SET  password =% s WHERE userid =% s', (password, (ID, ), ))
+                mysql.connection.commit()
+                message = 'Password updated !'            
+        elif request.method == 'POST':
+            mesage = 'Please fill out the form !'        
+        return render_template("password_change.html", message = message, changePassUserId = changePassUserId)
+    return redirect(url_for('login'))
+
+@app.route("/edit", methods =['GET', 'POST'])
+def edit():
+    msg = ''    
+    if 'loggedin' in session:
+        editUserId = request.args.get('ID')
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE ID = % s', (editUserId, ))
+        editUser = cursor.fetchone()
+        if request.method == 'POST' and 'First_Name' in request.form and 'Last_Name' in request.form and 'Password' in request.form and 'Email_address' in request.form:
+           First_Name = request.form['First_Name']   
+            Last_Name = request.form['Last_Name']
+            Password = request.form['Password']            
+            Email_address = request.form['Email_address']
+            if not re.match(r'[A-Za-z0-9]+', First_Name):
+                msg = 'name must contain only characters and numbers !'
+            else if not re.match(r'[A-Za-z0-9]+', Last_Name):
+                msg = 'name must contain only characters and numbers !'
+            else if not re.match(r'[^@]+@[^@]+\.[^@]+', Email_address):
+            msg = 'Invalid email address !'
+            else:
+                cursor.execute('UPDATE user SET   First_Name =% s, Last_Name =% s, Password =% s ,Email_address =% s, WHERE userid =% s', (First_Name, Last_Name, Password,Email_address, (ID, ), ))
+                mysql.connection.commit()
+                msg = 'User updated !'
+                return redirect(url_for('users'))
+        elif request.method == 'POST':
+            msg = 'Please fill out the form !'        
+        return render_template("edit.html", msg = msg, editUser = editUser)
     return redirect(url_for('login'))
