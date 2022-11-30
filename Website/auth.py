@@ -115,7 +115,7 @@ def reset_password():
     return redirect(url_for('login'))
  """  
 
-@app.route('/pythonlogin/profile')
+@app.route('/pythonlogin/profile') ## create the profile route and retrieve all the account details from the database only if the user is logged-in -leen
 def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
@@ -128,6 +128,7 @@ def profile():
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+
 @app.route("/password_change", methods =['GET', 'POST'])
 def password_change():
     mesage = ''
@@ -139,11 +140,12 @@ def password_change():
             userId = request.form['ID']
             if not password or not confirm_pass:
                 message = 'Please fill out the form !'
-            elif password != confirm_pass:
+            else if password != confirm_pass:
                 mesage = 'Confirm password is not equal!'
             else:
                 cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                cursor.execute('UPDATE user SET  password =% s WHERE userid =% s', (password, (ID, ), ))
+                 
+                cursor.execute('UPDATE user SET  password =% s WHERE userId =% s', (password, (ID, ), ))
                 mysql.connection.commit()
                 message = 'Password updated !'            
         elif request.method == 'POST':
@@ -157,7 +159,7 @@ def edit():
     if 'loggedin' in session:
         editUserId = request.args.get('ID')
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE ID = % s', (editUserId, ))
+        cursor.execute('SELECT * FROM user WHERE ID = % s', (editUserId))
         editUser = cursor.fetchone()
         if request.method == 'POST' and 'First_Name' in request.form and 'Last_Name' in request.form and 'Password' in request.form and 'Email_address' in request.form:
            First_Name = request.form['First_Name']   
