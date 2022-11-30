@@ -150,7 +150,7 @@ def password_change():
             mesage = 'Please fill out the form !'        
         return render_template("password_change.html", message = message, changePassUserId = changePassUserId)
     return redirect(url_for('login'))
-
+"""
 @app.route("/edit", methods =['GET', 'POST'])
 def edit():
     msg = ''    
@@ -179,3 +179,4 @@ def edit():
             msg = 'Please fill out the form !'        
         return render_template("edit.html", msg = msg, editUser = editUser)
     return redirect(url_for('login'))
+"""
