@@ -8,6 +8,8 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from random import randint
+from flask import Flask, render_template, flash, redirect, request, url_for, session, g
+from flask_mysqldb import MySQL
 
 
 
@@ -15,86 +17,88 @@ from random import randint
 app = Flask(__name__,template_folder='templates')## name of file/ or file run / this is how it initialized 
 mysql = MySQL(app) # we can make use of this mysql object within our post request to make an entry into the database -leen
 
+### making the connection with the database ~ Saad :  
+
 app.config['SECRET_KEY'] = 'saad'  ## encrypt or secure cookies and session data related to website (not important) ~ Saad
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Saad@123456'
 app.config['MYSQL_DB'] = 'hotel_system'
 
-
+##########################
 
 
 auth = Blueprint('auth',__name__) ## attention to naming is unimportant, just by convention/ease 
 #app.register_blueprint(auth, url_prefix='/') ## this is the prefix for all URLs stored in this blueprint file 
 
-##mysql=MySQL(app) 
 
 
+## The auth.route defines the URL for each function/template and is crucial is redirecting, for example 
+## the /login URL routes to the login function which opens the login template.  ~ Saad. 
 
-## The auth.route defines the 
-
+####################### Login: 
 
 @auth.route('/login', methods= ['GET', 'POST']) ## GET and POST are flask HTTP methods, where GET is used to retrieve information#identify this URL accepts post and get requests, if it is a GET request, we display the form to the user, if its a POST request we store the details onto the database ~leen
-def login():          
-    msg = ''                          ## from a web server, and POST is used to send information
-    if request.method == 'POST':
-        if 'Email_address' in request.form:
-            if 'password' in request.form:
+def login():                                    ## from a web server, and POST is used to send information
+    msg = ''                          
+    if request.method == 'POST':  ## We are checking if there is input on page ("POST")
+        if 'Email_address' in request.form:  
+            if 'password' in request.form:  ## Making sure both email and password are input
                 Email_address =  request.form['Email_address']
                 password = request.form['password']
-                with app.app_context():
-                    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) 
-                    cursor.execute('SELECT * FROM users WHERE Email_address = % s AND  password = %s ', (Email_address,password))
-                    account = cursor.fetchone()
+                with app.app_context():   ## this was put in place due to an error in connecting to the database, however this fixed the issue ~ Saad
+                    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) ## Cursor is how we interact with database (in SQL)
+                    cursor.execute('SELECT * FROM users WHERE Email_address = % s AND  password = %s ', (Email_address,password)) 
+                    account = cursor.fetchone() ## selecting everything from the users table of the row which belong to these info 
                     if account:
-                        session['loggedin']= True
-                        session['id'] = account['ID']
+                        session['loggedin']= True # we are loggedin 
+                        session['id'] = account['ID'] 
                         session['username'] = account['First_Name']
                         msg = 'Logged in successfully !'
-                        return render_template('index2.html', msg = msg) ## returns to the signed in page which includes logout and 
+                        return render_template('index2.html', msg = msg) ## returns to the signed in page which includes logout and view profile
                     else:
                         msg = 'Incorrect username / password !'
     return render_template('login.html', msg = msg)
     
-    @app.route('/')
-    def Home():
-        cur= mysql.connection.cursor()
-        cur.execute("SELECT * FROM users")
-        fetchdata = cur.fetchall()
-        cur.close()
-        
-        return render_template('home.html',data=fetchdata)
-    return render_template("login.html") ## referencing to the login page template 
+######################################################### ~ Saad
+
+
+########################################  Logout: 
 
 @auth.route('/logout',  methods= ['GET', 'POST'])
 def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
+    session.pop('loggedin', None) ## we are popping all these to indicate that the user is no longer 
+    session.pop('id', None)       ## signed in so we are popping them (removing them ) ~ Saaad
     session.pop('username', None)
     return render_template("logout.html")
+
+################################## ~ Saad
+
+################################# Sign up: 
 
 @auth.route('/signup', methods= ['GET', 'POST'])
 def sign_up():
     msg = " "
-    if request.method == 'POST' :
+    if request.method == 'POST' :  ## Similar to login 
        if 'First_Name' in  request.form and 'Last_Name' in request.form and 'Email_address' in request.form and 'password' in request.form:
         First_Name = request.form["First_Name"]
         Last_Name = request.form["Last_Name"]
         Email = request.form["Email_address"]
         password = request.form["password"] 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE Email_address = % s', [Email])
-        account = cursor.fetchone()
+        cursor.execute('SELECT * FROM users WHERE Email_address = % s', [Email]) 
+        account = cursor.fetchone() ## we are checking if email already exists, then we give an error ~ Saad
         if account:
             msg = 'Account already exists !'
             flash("Account already exists")
         else:
-            id = randint(10000000,99999999) ## 9 digit id 
+            id = randint(10000000,99999999) ## Generating a random 9 digit ID ~ Saad
             cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
             mysql.connection.commit()
             msg = 'You have successfully registered !'
             return render_template("login.html",msg = msg)
     return render_template('signUp.html', msg = msg)
+
 
 """
 @auth.route('/resetpassword', methods= ['GET', 'POST'])
@@ -128,7 +132,7 @@ def profile():
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
-
+"""
 @app.route("/password_change", methods =['GET', 'POST'])
 def password_change():
     mesage = ''
@@ -152,6 +156,7 @@ def password_change():
             mesage = 'Please fill out the form !'        
         return render_template("password_change.html", message = message, changePassUserId = changePassUserId)
     return redirect(url_for('login'))
+"""
 """
 @app.route("/edit", methods =['GET', 'POST'])
 def edit():
@@ -182,3 +187,5 @@ def edit():
         return render_template("edit.html", msg = msg, editUser = editUser)
     return redirect(url_for('login'))
 """
+
+

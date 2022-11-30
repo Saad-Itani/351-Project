@@ -31,14 +31,14 @@
             </div>
             <!--search bar for booking rooms-->
             <div class = "book">
-                <form class = "book-form">
+                <form class = "book-form" action="{{url_for('views.reservation')}}" align="center" method = "post">
                     <div class = "form-item">
                         <label for = "checkin-date">CheckInDate: </label>
-                        <input type = "date" id = "chekin-date">
+                        <input type = "date" id = "chekin-date" name = "checkin-date">
                     </div>
                     <div class = "form-item">
                         <label for = "checkout-date">CheckOutDate: </label>
-                        <input type = "date" id = "chekout-date">
+                        <input type = "date" id = "chekout-date" name = "checkout-date">
                     </div>
                     <div class = "form-item">
                         <label for = "adult">RoomType </label>
