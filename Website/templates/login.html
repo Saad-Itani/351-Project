@@ -24,13 +24,13 @@
                <label>Password</label>
             </div>
             <div class="forgot-pass">
-               <a href="resetPassword.html">Forgot Password?</a>
+               <a href="{{ url_for('password_change') }}" class='btn btn-primary'>Forgot Password?</a>
             </div>
             <button onclick="window.location.href='index.html'"> Sign In </button>
             <div class="msg">{{msg}}</div>
             <div class="sign-up">
                Not a member?
-               <a href="/signup">signup now</a>
+               <a href="/signup" class='btn btn-primary' >signup now</a>
             </div>
          </form>
       </div>
