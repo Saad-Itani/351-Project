@@ -1,1 +1,0 @@
-Any images or javascript files or CSS files will be placed in the static folder. 

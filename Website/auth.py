@@ -1,10 +1,13 @@
+##### Similar to views file but this for the authentication (login page...), this file contains the functions that concern with 
+## user authentication such as signup, login, logout, user profile, ... ~ Saad 
+
+### The importing of the required modules: 
+
 from flask import Flask, Blueprint , render_template, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from random import randint
-
-##### Similar to views file but this for the authentication (login page...)
 
 
 
@@ -28,7 +31,7 @@ auth = Blueprint('auth',__name__) ## attention to naming is unimportant, just by
 
 
 
-#### Making routes for each login, logout , and signup and assigning dummy HTML headers for now* (20.11.2022 , 12:30 am) ~ Saad
+## The auth.route defines the 
 
 
 @auth.route('/login', methods= ['GET', 'POST']) ## GET and POST are flask HTTP methods, where GET is used to retrieve information#identify this URL accepts post and get requests, if it is a GET request, we display the form to the user, if its a POST request we store the details onto the database ~leen
