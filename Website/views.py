@@ -17,3 +17,7 @@ views = Blueprint('views',__name__) ## attention to naming is unimportant, just 
 
 def home():
     return render_template("index.html")
+
+@views.route('/invoice',methods=['GET', 'POST'])
+def invoice():
+    return render_template("invoices.html")
