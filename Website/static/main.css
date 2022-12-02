@@ -267,7 +267,7 @@ input[type=text], select {
 
 /* booking form */
 .book{
-    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("images/banner-img.jpg") center/cover no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), center/cover no-repeat;
     color: #fff;
     padding: 40px 60px;
 }
