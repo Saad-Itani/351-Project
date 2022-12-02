@@ -85,6 +85,7 @@ def sign_up():
         Last_Name = request.form["Last_Name"]
         Email = request.form["Email_address"]
         password = request.form["password"] 
+        Dob = request.form["Dob"]
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM users WHERE Email_address = % s', [Email]) 
         account = cursor.fetchone() ## we are checking if email already exists, then we give an error ~ Saad
@@ -93,7 +94,7 @@ def sign_up():
             flash("Account already exists")
         else:
             id = randint(10000000,99999999) ## Generating a random 9 digit ID ~ Saad
-            cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,0 ))
+            cursor.execute('INSERT INTO users VALUES (%s, % s, % s, % s, %s, %s, %s)', (id, First_Name, Last_Name,Email,password,0,Dob ))
             mysql.connection.commit()
             msg = 'You have successfully registered !'
             return render_template("login.html",msg = msg)

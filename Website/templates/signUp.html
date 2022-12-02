@@ -46,6 +46,11 @@
                <span class="fas fa-lock"></span>
                <label>Password</label>
             </div>
+            <div class="field">
+               <input type="date"  name = "Dob" id = "Dob" required>
+               <span class="fas fa-user" ></span>
+               <label> Date of Birth <br> <br> <br>  </label>
+            </div>
             <button type="submit" class = "btn" > Sign Up </button>
             <body>
                {% for mesg in get_flashed_messages() %}
