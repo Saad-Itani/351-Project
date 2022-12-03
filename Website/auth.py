@@ -116,29 +116,33 @@ def profile():
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+####################################### Function to reset password if user forgot his password 
+
 @app.route("/password_change", methods =['GET', 'POST'])
 def password_change():
     message = ''
-    
-    changePassUserId = request.args.get('Email_address')        
-    if request.method == 'POST' and 'password' in request.form and 'confirm_pass' in request.form and 'Email_address' in request.form  :
-        password = request.form['password']   
-        confirm_pass = request.form['confirm_pass'] 
-        Email = request.form['Email_address']
-        if not password or not confirm_pass:
-            message = 'Please fill out the form !'
-        elif password != confirm_pass:
-            message = 'Confirm password is not equal!'           
-        elif request.method == 'POST':
-            message = 'Please fill out the form !'        
-        else :
-                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                #updates password to the new password
-                cursor.execute('UPDATE user SET  password =% s WHERE Email_address =% s', (password, (Email, ), ))
-                mysql.connection.commit()
-                message = 'Password updated !' 
-        return render_template("resetPassword.html", message = message, changePassUserId = changePassUserId)
-    return render_template("resetPassword.html", message = message)
+    if request.method == 'POST' :
+        if'Email_address' in request.form and 'password' in request.form and 'confirm_password' in request.form  :
+            password = request.form['password']   
+            confirm_pass = request.form['confirm_password'] 
+            Email = request.form['Email_address']
+            if not password or not confirm_pass:
+                message = 'Please fill out the form !'
+            elif password != confirm_pass:
+                message = 'Confirm password is not equal!' 
+                flash ('Confirm password is not equal!')                
+            else :
+                    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                    #updates password to the new password
+                    cursor.execute('UPDATE users SET  password =% s WHERE Email_address =% s', (password, (Email, ), ))
+                    mysql.connection.commit()
+                    message = 'Password updated !' 
+                    return render_template("login.html", msg = message)
+    return render_template("resetPassword.html", msg = message)
+
+############################################# ~ Saad and Leen 
+
+
 
 @app.route("/edit", methods =['GET', 'POST'])
 def edit():
